@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cookie Security Awareness</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, Arial, sans-serif;
+      background: radial-gradient(circle at top, #1f2937, #020617);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.45);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      color: #facc15;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      margin-bottom: 26px;
+    }
+
+    .terminal {
+      background: #020617;
+      border-radius: 16px;
+      padding: 18px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 14px;
+      min-height: 190px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .line {
+      margin: 8px 0;
+      opacity: 0;
+      transform: translateY(6px);
+      animation: show 0.45s forwards;
+    }
+
+    @keyframes show {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .danger {
+      color: #fb7185;
+    }
+
+    .ok {
+      color: #86efac;
+    }
+
+    .warn {
+      color: #facc15;
+    }
+
+    .info {
+      color: #93c5fd;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .reveal {
+      margin-top: 24px;
+      padding: 22px;
+      border-radius: 18px;
+      background: rgba(250, 204, 21, 0.1);
+      border: 1px solid rgba(250, 204, 21, 0.35);
+    }
+
+    .reveal h2 {
+      margin-top: 0;
+      color: #facc15;
+      font-size: 26px;
+    }
+
+    .lesson {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .lesson div {
+      background: rgba(30, 41, 59, 0.75);
+      padding: 14px 16px;
+      border-radius: 14px;
+      border-left: 4px solid #38bdf8;
+    }
+
+    button {
+      margin-top: 22px;
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      padding: 15px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #facc15;
+      color: #111827;
+    }
+
+    button:hover {
+      filter: brightness(1.05);
+    }
+
+    .footer {
+      margin-top: 18px;
+      color: #94a3b8;
+      font-size: 13px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="card">
+    <h1>🍪 Cookie Scan Started</h1>
+    <p class="subtitle">
+      This page is checking what your browser may expose when you scan a random QR code.
+    </p>
+
+    <div class="terminal" id="terminal"></div>
+
+    <section class="reveal hidden" id="reveal">
+      <h2>Relax. This was a safe simulation.</h2>
+      <p>
+        This page did <strong>not</strong> steal your cookies, passwords, or company data.
+        But scanning unknown QR codes can take you to malicious websites that try to trick you,
+        steal sessions, or capture credentials.
+      </p>
+
+      <div class="lesson">
+        <div>🍪 Cookies can represent your logged-in identity.</div>
+        <div>🔐 If session cookies are stolen, attackers may act as you.</div>
+        <div>📱 A QR code is just a hidden web link. Treat it like a suspicious link.</div>
+        <div>🛡️ IAM, MFA, session controls, and awareness protect company access.</div>
+      </div>
+
+      <button onclick="restartDemo()">Run demo again</button>
+    </section>
+
+    <div class="footer">
+      Security Awareness Demo • No personal data is collected or sent anywhere
+    </div>
+  </main>
+
+  <script>
+    const terminal = document.getElementById("terminal");
+    const reveal = document.getElementById("reveal");
+
+    const deviceInfo = {
+      browser: navigator.userAgent.includes("Chrome") ? "Chrome-like browser" :
+               navigator.userAgent.includes("Firefox") ? "Firefox" :
+               navigator.userAgent.includes("Safari") ? "Safari-like browser" :
+               "Unknown browser",
+      platform: navigator.platform || "Unknown platform",
+      language: navigator.language || "Unknown language",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown timezone",
+      screen: `${screen.width}x${screen.height}`,
+      online: navigator.onLine ? "YES" : "NO"
+    };
+
+    const fakeCookies = [
+      "session_id = ***************",
+      "auth_token = ***************",
+      "last_login = Today",
+      "remember_device = true",
+      "corporate_access = possible"
+    ];
+
+    const lines = [
+      { text: "> QR destination opened...", className: "info" },
+      { text: "> Reading browser-visible signals...", className: "warn" },
+      { text: `> Browser: ${deviceInfo.browser}`, className: "ok" },
+      { text: `> Platform: ${deviceInfo.platform}`, className: "ok" },
+      { text: `> Language: ${deviceInfo.language}`, className: "ok" },
+      { text: `> Timezone: ${deviceInfo.timezone}`, className: "ok" },
+      { text: `> Screen: ${deviceInfo.screen}`, className: "ok" },
+      { text: `> Online: ${deviceInfo.online}`, className: "ok" },
+      { text: "> Simulating cookie exposure...", className: "danger" },
+      ...fakeCookies.map(c => ({ text: `> ${c}`, className: "danger" })),
+      { text: "> Risk: Unknown QR codes can lead to phishing or session theft.", className: "danger" },
+      { text: "> Opening awareness message...", className: "warn" }
+    ];
+
+    function typeLines() {
+      terminal.innerHTML = "";
+      reveal.classList.add("hidden");
+
+      lines.forEach((line, index) => {
+        setTimeout(() => {
+          const div = document.createElement("div");
+          div.className = `line ${line.className}`;
+          div.style.animationDelay = "0s";
+          div.textContent = line.text;
+          terminal.appendChild(div);
+        }, index * 650);
+      });
+
+      setTimeout(() => {
+        reveal.classList.remove("hidden");
+      }, lines.length * 650 + 400);
+    }
+
+    function restartDemo() {
+      typeLines();
+    }
+
+    typeLines();
+  </script>
+
+</body>
+</html>
