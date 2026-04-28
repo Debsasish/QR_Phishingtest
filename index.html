@@ -3,474 +3,166 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>QR Cookie & IAM Security Awareness Demo</title>
+  <title>Infomania</title>
 
   <style>
-    :root {
-      --bg-main: #050816;
-      --bg-card: rgba(15, 23, 42, 0.92);
-      --bg-panel: rgba(2, 6, 23, 0.78);
-      --bg-soft: rgba(30, 41, 59, 0.74);
-
-      --text-main: #e5e7eb;
-      --text-soft: #cbd5e1;
-      --text-muted: #94a3b8;
-
-      --yellow: #facc15;
-      --red: #fb7185;
-      --red-strong: #ef4444;
-      --green: #86efac;
-      --blue: #93c5fd;
-      --cyan: #67e8f9;
-      --purple: #c084fc;
-      --orange: #fdba74;
-
-      --border: rgba(148, 163, 184, 0.25);
-      --shadow: 0 30px 120px rgba(0, 0, 0, 0.55);
-
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 14px;
-    }
-
     * {
       box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
     }
 
     body {
       margin: 0;
       min-height: 100vh;
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-
       background:
-        radial-gradient(circle at 18% 8%, rgba(250, 204, 21, 0.18), transparent 26%),
-        radial-gradient(circle at 82% 0%, rgba(56, 189, 248, 0.20), transparent 32%),
-        radial-gradient(circle at 50% 100%, rgba(244, 63, 94, 0.18), transparent 28%),
-        linear-gradient(135deg, #020617 0%, #050816 60%, #111827 100%);
-      color: var(--text-main);
-      padding: 22px;
+        radial-gradient(circle at top left, rgba(250, 204, 21, 0.16), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.18), transparent 30%),
+        #020617;
+      color: #e5e7eb;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 18px;
     }
 
-    .page {
+    .card {
       width: 100%;
-      max-width: 1120px;
-      margin: 0 auto;
+      max-width: 980px;
+      background: rgba(15, 23, 42, 0.94);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 28px;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.55);
+      overflow: hidden;
     }
 
-    .topbar {
+    .top {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 18px;
+      align-items: center;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      padding: 9px 15px;
-      border-radius: 999px;
-      background: rgba(250, 204, 21, 0.12);
-      border: 1px solid rgba(250, 204, 21, 0.35);
-      color: var(--yellow);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
+      color: #facc15;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      font-size: 13px;
+      text-transform: uppercase;
     }
 
-    .privacy-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 15px;
-      border-radius: 999px;
-      background: rgba(34, 197, 94, 0.10);
-      border: 1px solid rgba(34, 197, 94, 0.26);
-      color: #bbf7d0;
+    .safe {
+      color: #86efac;
       font-size: 13px;
       font-weight: 700;
     }
 
-    .card {
-      position: relative;
-      overflow: hidden;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: clamp(22px, 4vw, 36px);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(
-          120deg,
-          transparent,
-          rgba(255, 255, 255, 0.055),
-          transparent
-        );
-      transform: translateX(-100%);
-      animation: shine 5s infinite;
-      pointer-events: none;
-    }
-
-    @keyframes shine {
-      0% {
-        transform: translateX(-100%);
-      }
-      45% {
-        transform: translateX(100%);
-      }
-      100% {
-        transform: translateX(100%);
-      }
-    }
-
-    .hero {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 26px;
-      align-items: center;
-      margin-bottom: 28px;
-    }
-
-    @media (max-width: 880px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
+    .content {
+      padding: 28px;
     }
 
     h1 {
-      margin: 0;
+      margin: 0 0 10px;
       font-size: clamp(34px, 6vw, 64px);
-      line-height: 0.96;
+      line-height: 0.95;
       letter-spacing: -1.8px;
     }
 
-    .highlight {
-      color: var(--yellow);
+    .yellow {
+      color: #facc15;
     }
 
-    .hero-text {
-      color: var(--text-soft);
-      font-size: 18px;
-      line-height: 1.65;
-      max-width: 760px;
-      margin: 18px 0 0;
+    .subtitle {
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin: 0 0 24px;
+      font-size: 17px;
     }
 
-    .hero-warning {
-      margin-top: 18px;
-      padding: 15px 16px;
-      border-radius: var(--radius-md);
-      background: rgba(251, 113, 133, 0.11);
-      border: 1px solid rgba(251, 113, 133, 0.28);
-      color: #fecdd3;
-      line-height: 1.55;
-      font-size: 14px;
+    .terminal-box {
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 20px;
+      overflow: hidden;
     }
 
-    .truth-box {
-      background:
-        linear-gradient(135deg, rgba(14, 165, 233, 0.13), rgba(124, 58, 237, 0.12));
-      border: 1px solid rgba(147, 197, 253, 0.24);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-    }
-
-    .truth-box h2 {
-      margin: 0 0 12px;
-      font-size: 22px;
-      color: #e0f2fe;
-    }
-
-    .truth-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .truth-item {
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 10px;
-      align-items: start;
-      color: var(--text-soft);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .truth-item strong {
-      color: #fff;
-    }
-
-    .layout {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 22px;
-    }
-
-    @media (max-width: 920px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .panel {
-      background: var(--bg-panel);
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-    }
-
-    .terminal-header {
+    .terminal-head {
+      padding: 12px 16px;
+      background: rgba(30, 41, 59, 0.9);
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-      color: var(--text-muted);
+      align-items: center;
+      color: #94a3b8;
       font-size: 13px;
     }
 
     .dots {
       display: flex;
       gap: 7px;
-      flex-shrink: 0;
     }
 
     .dot {
       width: 11px;
       height: 11px;
-      border-radius: 50%;
+      border-radius: 999px;
       background: #64748b;
     }
 
-    .dot.red {
-      background: #f87171;
-    }
-
-    .dot.yellow {
-      background: #facc15;
-    }
-
-    .dot.green {
-      background: #4ade80;
-    }
-
-    .terminal-title {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
+    .red { background: #f87171; }
+    .amber { background: #facc15; }
+    .green { background: #4ade80; }
 
     .terminal {
+      padding: 18px;
       min-height: 430px;
-      max-height: 520px;
+      max-height: 540px;
       overflow-y: auto;
-      padding-right: 6px;
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        "Liberation Mono",
-        monospace;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 14px;
       line-height: 1.55;
     }
 
-    .terminal::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .terminal::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.35);
-      border-radius: 999px;
-    }
-
     .line {
+      margin: 5px 0;
       opacity: 0;
       transform: translateY(5px);
-      animation: appear 0.3s forwards;
-      margin: 6px 0;
+      animation: show 0.28s forwards;
       word-break: break-word;
     }
 
-    @keyframes appear {
+    @keyframes show {
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
 
-    .info {
-      color: var(--blue);
-    }
-
-    .ok {
-      color: var(--green);
-    }
-
-    .warn {
-      color: var(--yellow);
-    }
-
-    .danger {
-      color: var(--red);
-    }
-
-    .cyan {
-      color: var(--cyan);
-    }
-
-    .purple {
-      color: var(--purple);
-    }
-
-    .muted {
-      color: var(--text-muted);
-    }
-
-    .side-stack {
-      display: grid;
-      gap: 18px;
-    }
-
-    .risk-panel {
-      text-align: center;
-    }
-
-    .risk-label {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-
-    .circle {
-      width: 178px;
-      height: 178px;
-      border-radius: 50%;
-      margin: 0 auto 18px;
-      display: grid;
-      place-items: center;
-      background:
-        conic-gradient(
-          var(--red) 0deg,
-          var(--yellow) 235deg,
-          rgba(51, 65, 85, 0.65) 235deg
-        );
-      position: relative;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
-    }
-
-    .circle::after {
-      content: "";
-      position: absolute;
-      width: 132px;
-      height: 132px;
-      border-radius: 50%;
-      background: #020617;
-      border: 1px solid rgba(148, 163, 184, 0.16);
-    }
-
-    .score {
-      position: relative;
-      z-index: 1;
-      font-size: 44px;
-      font-weight: 900;
-      color: var(--yellow);
-      letter-spacing: -1px;
-    }
-
-    .risk-note {
-      color: var(--text-soft);
-      font-size: 13px;
-      line-height: 1.5;
-      margin-top: 10px;
-    }
-
-    .mini-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .mini-item {
-      padding: 13px;
-      border-radius: var(--radius-md);
-      background: var(--bg-soft);
-      border-left: 4px solid var(--cyan);
-      color: var(--text-soft);
-      font-size: 14px;
-      line-height: 1.45;
-      text-align: left;
-    }
-
-    .mini-item strong {
-      color: #fff;
-    }
-
-    .section {
-      position: relative;
-      z-index: 1;
-      margin-top: 24px;
-      padding: 22px;
-      border-radius: var(--radius-lg);
-      background: rgba(15, 23, 42, 0.72);
-      border: 1px solid rgba(148, 163, 184, 0.20);
-    }
-
-    .section h2 {
-      margin: 0 0 10px;
-      font-size: 28px;
-      letter-spacing: -0.5px;
-    }
-
-    .section p {
-      color: var(--text-soft);
-      line-height: 1.65;
-    }
+    .info { color: #93c5fd; }
+    .ok { color: #86efac; }
+    .warn { color: #facc15; }
+    .danger { color: #fb7185; }
+    .cyan { color: #67e8f9; }
+    .muted { color: #94a3b8; }
 
     .reveal {
       display: none;
-      background:
-        linear-gradient(135deg, rgba(250, 204, 21, 0.14), rgba(239, 68, 68, 0.10));
-      border: 1px solid rgba(250, 204, 21, 0.38);
+      margin-top: 24px;
+      padding: 22px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.15), rgba(239, 68, 68, 0.10));
+      border: 1px solid rgba(250, 204, 21, 0.35);
     }
 
     .reveal.show {
       display: block;
-      animation: pop 0.45s ease-out;
+      animation: pop 0.4s ease-out;
     }
 
     @keyframes pop {
       from {
         opacity: 0;
-        transform: scale(0.975);
+        transform: scale(0.97);
       }
       to {
         opacity: 1;
@@ -479,592 +171,230 @@
     }
 
     .reveal h2 {
-      color: var(--yellow);
+      margin: 0 0 10px;
+      color: #facc15;
+      font-size: 30px;
     }
 
-    .grid-2 {
+    .reveal p {
+      color: #e2e8f0;
+      line-height: 1.65;
+    }
+
+    .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 14px;
       margin-top: 18px;
     }
 
-    @media (max-width: 760px) {
-      .grid-2 {
+    @media (max-width: 720px) {
+      .grid {
         grid-template-columns: 1fr;
       }
     }
 
     .lesson {
-      padding: 16px;
-      border-radius: 18px;
       background: rgba(2, 6, 23, 0.55);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      line-height: 1.5;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 16px;
+      padding: 16px;
     }
 
     .lesson strong {
       display: block;
-      margin-bottom: 7px;
-      color: #fff;
-      font-size: 15px;
+      margin-bottom: 6px;
+      color: white;
     }
 
     .lesson span {
-      color: var(--text-soft);
+      color: #cbd5e1;
+      line-height: 1.5;
       font-size: 14px;
     }
 
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 16px;
-      overflow: hidden;
-      border-radius: var(--radius-md);
-      font-size: 14px;
-    }
-
-    .data-table th,
-    .data-table td {
-      text-align: left;
-      vertical-align: top;
-      padding: 12px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.16);
-    }
-
-    .data-table th {
-      width: 32%;
-      color: #e2e8f0;
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    .data-table td {
-      color: var(--text-soft);
-      background: rgba(2, 6, 23, 0.42);
-      word-break: break-word;
-    }
-
-    .status-good {
-      color: var(--green);
-      font-weight: 800;
-    }
-
-    .status-warn {
-      color: var(--yellow);
-      font-weight: 800;
-    }
-
-    .status-danger {
-      color: var(--red);
-      font-weight: 800;
-    }
-
-    .actions {
+    .buttons {
       display: flex;
       gap: 12px;
-      margin-top: 22px;
       flex-wrap: wrap;
+      margin-top: 20px;
     }
 
     button {
       border: 0;
       border-radius: 14px;
       padding: 14px 18px;
-      font-weight: 900;
       cursor: pointer;
+      font-weight: 900;
       font-size: 15px;
-      transition:
-        transform 0.15s ease,
-        filter 0.15s ease,
-        background 0.15s ease;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.05);
-    }
-
-    button:active {
-      transform: translateY(0);
     }
 
     .primary {
-      background: var(--yellow);
+      background: #facc15;
       color: #111827;
     }
 
     .secondary {
-      background: rgba(148, 163, 184, 0.16);
-      color: var(--text-main);
-      border: 1px solid rgba(148, 163, 184, 0.24);
+      background: rgba(148, 163, 184, 0.15);
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.25);
     }
 
-    .danger-btn {
-      background: rgba(251, 113, 133, 0.14);
-      color: #fecdd3;
-      border: 1px solid rgba(251, 113, 133, 0.30);
-    }
-
-    .hidden {
+    .details {
       display: none;
+      margin-top: 20px;
+      background: rgba(2, 6, 23, 0.55);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 18px;
+      overflow: hidden;
     }
 
-    .safe-demo {
-      margin-top: 18px;
-      padding: 15px;
-      border-radius: var(--radius-md);
-      background: rgba(34, 197, 94, 0.10);
-      border: 1px solid rgba(34, 197, 94, 0.25);
-      color: #bbf7d0;
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .myth-grid {
-      display: grid;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .myth {
-      padding: 15px;
-      border-radius: var(--radius-md);
-      background: rgba(2, 6, 23, 0.5);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-    }
-
-    .myth strong {
+    .details.show {
       display: block;
-      color: #fff;
-      margin-bottom: 6px;
     }
 
-    .myth span {
-      color: var(--text-soft);
-      line-height: 1.55;
+    table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 14px;
     }
 
-    .copy-box {
-      white-space: pre-wrap;
-      background: rgba(2, 6, 23, 0.75);
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      color: var(--text-soft);
-      padding: 14px;
-      border-radius: var(--radius-md);
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        monospace;
-      font-size: 13px;
-      line-height: 1.55;
-      margin-top: 14px;
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    }
+
+    th {
+      width: 34%;
+      color: #fff;
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    td {
+      color: #cbd5e1;
+      word-break: break-word;
     }
 
     .footer {
-      margin-top: 18px;
-      color: var(--text-muted);
+      padding: 16px 24px;
+      border-top: 1px solid rgba(148, 163, 184, 0.18);
+      color: #94a3b8;
       font-size: 13px;
       text-align: center;
       line-height: 1.5;
-    }
-
-    .shake {
-      animation: shake 0.35s linear;
-    }
-
-    @keyframes shake {
-      0%, 100% {
-        transform: translateX(0);
-      }
-      25% {
-        transform: translateX(-5px);
-      }
-      75% {
-        transform: translateX(5px);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
     }
   </style>
 </head>
 
 <body>
-  <main class="page">
-    <div class="topbar">
-      <div class="badge">🍪 QR + Cookie + IAM Awareness Simulation</div>
-      <div class="privacy-pill">✅ No data is sent anywhere</div>
+  <main class="card">
+    <div class="top">
+      <div class="badge">Infomania</div>
+      <div class="safe">Safe IAM awareness simulation</div>
     </div>
 
-    <section class="card" id="mainCard">
-      <div class="hero">
-        <div>
-          <h1>
-            This QR code could have been a
-            <span class="highlight">security trap.</span>
-          </h1>
+    <div class="content">
+      <h1>Finding your <span class="yellow">Infomania</span>...</h1>
+      <p class="subtitle">
+        The terminal will appear first, just like a scan. Then the awareness message will explain what happened.
+      </p>
 
-          <p class="hero-text">
-            You scanned a QR code and opened a web page. A QR code is just a hidden URL.
-            This safe demo shows what a normal website can actually see, what it cannot see,
-            and why IAM controls matter.
-          </p>
-
-          <div class="hero-warning">
-            <strong>Important accuracy note:</strong>
-            This page cannot read cookies from Gmail, Teams, banking sites, company portals,
-            or any other domain. It can only read non-HttpOnly cookies belonging to this same
-            website/domain, plus basic browser-visible signals.
+      <section class="terminal-box">
+        <div class="terminal-head">
+          <div class="dots">
+            <span class="dot red"></span>
+            <span class="dot amber"></span>
+            <span class="dot green"></span>
           </div>
-
-          <div class="actions">
-            <button class="primary" onclick="runDemo()">Start QR scan simulation</button>
-            <button class="secondary" onclick="toggleExactData()">View exact readable data</button>
-          </div>
+          <span>infomania-scan.local</span>
         </div>
 
-        <div class="truth-box">
-          <h2>What this demo teaches</h2>
+        <div class="terminal" id="terminal"></div>
+      </section>
 
-          <div class="truth-list">
-            <div class="truth-item">
-              <div>📱</div>
-              <div>
-                <strong>QR codes hide links.</strong>
-                You usually do not know the destination until after opening it.
-              </div>
-            </div>
-
-            <div class="truth-item">
-              <div>🍪</div>
-              <div>
-                <strong>Cookies are scoped.</strong>
-                A site can read its own readable cookies, not cookies from other websites.
-              </div>
-            </div>
-
-            <div class="truth-item">
-              <div>🎭</div>
-              <div>
-                <strong>The real danger is trickery.</strong>
-                Fake SSO pages, fake MFA prompts, and phishing pages can steal credentials.
-              </div>
-            </div>
-
-            <div class="truth-item">
-              <div>🔐</div>
-              <div>
-                <strong>IAM reduces impact.</strong>
-                MFA, conditional access, least privilege, and session controls protect accounts.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="layout">
-        <div class="panel">
-          <div class="terminal-header">
-            <div class="dots">
-              <span class="dot red"></span>
-              <span class="dot yellow"></span>
-              <span class="dot green"></span>
-            </div>
-            <span class="terminal-title">safe-browser-session-scan.demo</span>
-          </div>
-
-          <div class="terminal" id="terminal" aria-live="polite"></div>
-        </div>
-
-        <div class="side-stack">
-          <div class="panel risk-panel">
-            <div class="risk-label">Simulated Awareness Risk Score</div>
-
-            <div class="circle">
-              <div class="score" id="score">0%</div>
-            </div>
-
-            <div class="risk-note">
-              This is an educational score, not a real vulnerability score.
-              It increases because unknown QR codes can lead to unsafe destinations.
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="mini-list">
-              <div class="mini-item">
-                <strong>Hidden URL</strong><br />
-                A QR code can point to a lookalike login page.
-              </div>
-
-              <div class="mini-item">
-                <strong>Own-domain cookies</strong><br />
-                A website can set and read cookies for itself.
-              </div>
-
-              <div class="mini-item">
-                <strong>Session risk</strong><br />
-                Stolen sessions can allow impersonation.
-              </div>
-
-              <div class="mini-item">
-                <strong>IAM controls</strong><br />
-                MFA and conditional access reduce account takeover risk.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <section class="section reveal" id="reveal">
-        <h2>Relax — this was a safe simulation.</h2>
+      <section class="reveal" id="reveal">
+        <h2>This was a safe IAM awareness simulation.</h2>
 
         <p>
-          This page did <strong>not</strong> steal passwords, tokens, corporate data,
-          or cookies from other websites. It created one harmless demo cookie for this
-          website only, then showed that a page can read its own non-HttpOnly cookies.
+          This page did not steal your passwords, tokens, corporate data, or cookies from other websites.
+          It only displayed browser-visible information and created one harmless demo cookie for this website.
         </p>
 
         <p>
-          The real risk is that an unknown QR code can send people to a phishing page,
-          fake SSO page, malicious download, or tracking page. That is where IAM and
-          security awareness become important.
+          A normal website cannot read cookies from Gmail, Teams, banking sites, or company portals.
+          But an unknown QR code can still lead you to phishing pages, fake SSO screens, malware downloads,
+          or credential theft.
         </p>
 
-        <div class="grid-2">
+        <div class="grid">
+          <div class="lesson">
+            <strong>📱 QR code = hidden link</strong>
+            <span>You usually do not know the final destination until after opening it.</span>
+          </div>
+
           <div class="lesson">
             <strong>🍪 Cookie truth</strong>
-            <span>
-              JavaScript can read only cookies available to the current website and path.
-              It cannot read cookies from unrelated websites.
-            </span>
+            <span>A website can only read its own readable cookies, not cookies from other domains.</span>
           </div>
 
           <div class="lesson">
-            <strong>🚫 HttpOnly protection</strong>
-            <span>
-              Cookies marked HttpOnly are not readable by JavaScript. This is why sensitive
-              session cookies should use HttpOnly where possible.
-            </span>
+            <strong>🎣 Real danger</strong>
+            <span>A fake login page can trick users into entering credentials or MFA codes.</span>
           </div>
 
           <div class="lesson">
-            <strong>🎣 Phishing risk</strong>
-            <span>
-              A QR code can lead to a fake login screen. The page may look real, but the
-              credentials go to the attacker.
-            </span>
-          </div>
-
-          <div class="lesson">
-            <strong>🔐 IAM lesson</strong>
-            <span>
-              MFA, least privilege, conditional access, session expiry, and access reviews
-              reduce the blast radius if a user is tricked.
-            </span>
+            <strong>🔐 IAM matters</strong>
+            <span>MFA, conditional access, least privilege, and session controls reduce risk.</span>
           </div>
         </div>
 
-        <div class="safe-demo">
-          ✅ Safe demo guarantee: this file contains no external scripts, no analytics,
-          no network calls, and no data upload logic.
+        <div class="buttons">
+          <button class="primary" onclick="restartScan()">Run scan again</button>
+          <button class="secondary" onclick="toggleDetails()">Show exact info shown</button>
         </div>
 
-        <div class="actions">
-          <button class="primary" onclick="runDemo()">Run again</button>
-          <button class="secondary" onclick="toggleChecklist()">Show safety checklist</button>
-          <button class="secondary" onclick="toggleMyths()">Show myth vs fact</button>
-          <button class="danger-btn" onclick="resetDemoData()">Reset demo cookie/storage</button>
+        <div class="details" id="details">
+          <table>
+            <tbody id="detailsBody"></tbody>
+          </table>
         </div>
       </section>
+    </div>
 
-      <section class="section hidden" id="exactData">
-        <h2>Exactly what this page can read</h2>
-
-        <p>
-          The table below shows browser-visible values available to this page locally.
-          Nothing here is transmitted anywhere.
-        </p>
-
-        <table class="data-table">
-          <tbody id="dataTableBody"></tbody>
-        </table>
-      </section>
-
-      <section class="section hidden" id="checklist">
-        <h2>QR safety checklist</h2>
-
-        <div class="grid-2">
-          <div class="lesson">
-            <strong>1. Pause before scanning</strong>
-            <span>
-              Ask: who placed this QR code, why is it here, and does it look tampered with?
-            </span>
-          </div>
-
-          <div class="lesson">
-            <strong>2. Check the destination</strong>
-            <span>
-              After scanning, inspect the URL before entering credentials or downloading anything.
-            </span>
-          </div>
-
-          <div class="lesson">
-            <strong>3. Be suspicious of login pages</strong>
-            <span>
-              Fake SSO pages are common. Open trusted apps directly instead of through random QR links.
-            </span>
-          </div>
-
-          <div class="lesson">
-            <strong>4. Report suspicious QR codes</strong>
-            <span>
-              If the QR code appears in an unusual place, report it to the security team.
-            </span>
-          </div>
-
-          <div class="lesson">
-            <strong>5. Protect identity</strong>
-            <span>
-              Use MFA, avoid password reuse, and never approve unexpected MFA prompts.
-            </span>
-          </div>
-
-          <div class="lesson">
-            <strong>6. Think IAM</strong>
-            <span>
-              Access should be granted only to the right identity, from the right device,
-              at the right time, for the right reason.
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <section class="section hidden" id="myths">
-        <h2>Myth vs fact</h2>
-
-        <div class="myth-grid">
-          <div class="myth">
-            <strong>Myth: Scanning a QR code instantly gives away all my cookies.</strong>
-            <span>
-              Fact: A normal website cannot read cookies from other websites. But it can
-              send you to phishing, set/read its own cookies, or trick you into sharing data.
-            </span>
-          </div>
-
-          <div class="myth">
-            <strong>Myth: If a website knows my browser and timezone, I am hacked.</strong>
-            <span>
-              Fact: Many websites can see basic browser signals. The risk comes when those
-              signals are combined with phishing, tracking, or credential capture.
-            </span>
-          </div>
-
-          <div class="myth">
-            <strong>Myth: MFA means I do not need to worry about QR phishing.</strong>
-            <span>
-              Fact: MFA helps a lot, but attackers may still try fake MFA prompts,
-              session theft, or social engineering.
-            </span>
-          </div>
-
-          <div class="myth">
-            <strong>Myth: IAM is only an IT problem.</strong>
-            <span>
-              Fact: IAM works best when users also make good decisions: verify links,
-              report suspicious activity, and use access responsibly.
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <section class="section hidden" id="reportSection">
-        <h2>Awareness message</h2>
-
-        <p>
-          You can copy this text and use it below the QR code campaign or in an awareness email.
-        </p>
-
-        <div class="copy-box" id="reportText"></div>
-
-        <div class="actions">
-          <button class="primary" onclick="copyReport()">Copy awareness message</button>
-        </div>
-      </section>
-
-      <div class="actions" style="position: relative; z-index: 1;">
-        <button class="secondary" onclick="toggleReport()">Show campaign message</button>
-      </div>
-
-      <div class="footer">
-        Security Awareness Demo • QR Phishing • Cookie Scope • IAM • Session Security<br />
-        Built as a single local HTML file with embedded CSS and JavaScript.
-      </div>
-    </section>
+    <div class="footer">
+      No external scripts. No analytics. No data upload. Built for QR, cookie, phishing, and IAM awareness.
+    </div>
   </main>
 
   <script>
-    /********************************************************************
-     * QR COOKIE & IAM SECURITY AWARENESS DEMO
-     *
-     * This page is intentionally safe:
-     * - No external scripts
-     * - No analytics
-     * - No fetch/XMLHttpRequest/network upload
-     * - No geolocation request
-     * - No camera/microphone request
-     * - No password/token collection
-     *
-     * It only reads browser-visible values locally and creates one demo
-     * cookie for this website/domain.
-     ********************************************************************/
-
     const terminal = document.getElementById("terminal");
     const reveal = document.getElementById("reveal");
-    const scoreEl = document.getElementById("score");
-    const exactData = document.getElementById("exactData");
-    const dataTableBody = document.getElementById("dataTableBody");
-    const checklist = document.getElementById("checklist");
-    const myths = document.getElementById("myths");
-    const reportSection = document.getElementById("reportSection");
-    const reportText = document.getElementById("reportText");
-    const mainCard = document.getElementById("mainCard");
+    const details = document.getElementById("details");
+    const detailsBody = document.getElementById("detailsBody");
 
-    const DEMO_COOKIE_NAME = "qr_iam_demo_cookie";
-    const DEMO_STORAGE_KEY = "qr_iam_demo_local_storage";
-    const DEMO_SESSION_KEY = "qr_iam_demo_session_storage";
+    const DEMO_COOKIE = "infomania_demo_cookie";
 
-    let activeTimers = [];
+    let timers = [];
 
     function clearTimers() {
-      activeTimers.forEach(timerId => clearTimeout(timerId));
-      activeTimers = [];
+      timers.forEach(id => clearTimeout(id));
+      timers = [];
     }
 
-    function safeValue(value, fallback = "Not available") {
-      if (value === undefined || value === null || value === "") {
-        return fallback;
-      }
-      return String(value);
+    function setDemoCookie() {
+      const secure = location.protocol === "https:" ? "; Secure" : "";
+      document.cookie =
+        DEMO_COOKIE +
+        "=demo_only_" +
+        Math.random().toString(36).slice(2, 8) +
+        "; Max-Age=3600; SameSite=Lax; Path=/" +
+        secure;
     }
 
-    function booleanText(value) {
-      return value ? "YES" : "NO";
-    }
-
-    function nowText() {
-      return new Date().toLocaleString();
+    function removeDemoCookie() {
+      document.cookie = DEMO_COOKIE + "=; Max-Age=0; Path=/; SameSite=Lax";
     }
 
     function getBrowserName() {
@@ -1073,26 +403,22 @@
       if (ua.includes("Edg/")) return "Microsoft Edge";
       if (ua.includes("OPR/") || ua.includes("Opera")) return "Opera";
       if (ua.includes("Firefox/")) return "Firefox";
-      if (ua.includes("Chrome/") && ua.includes("Safari/")) return "Chrome / Chromium-based browser";
+      if (ua.includes("Chrome/") && ua.includes("Safari/")) return "Chrome / Chromium";
       if (ua.includes("Safari/") && !ua.includes("Chrome/")) return "Safari";
+
       return "Unknown browser";
     }
 
     function getDeviceType() {
       const ua = navigator.userAgent.toLowerCase();
 
-      if (/iphone|ipod|android.*mobile|windows phone/.test(ua)) {
-        return "Mobile";
-      }
-
-      if (/ipad|tablet|android(?!.*mobile)/.test(ua)) {
-        return "Tablet";
-      }
+      if (/iphone|ipod|android.*mobile|windows phone/.test(ua)) return "Mobile";
+      if (/ipad|tablet|android(?!.*mobile)/.test(ua)) return "Tablet";
 
       return "Desktop / Laptop";
     }
 
-    function getOperatingSystemHint() {
+    function getOSHint() {
       const ua = navigator.userAgent;
 
       if (/Windows NT/i.test(ua)) return "Windows";
@@ -1105,655 +431,185 @@
     }
 
     function getConnectionInfo() {
-      const connection =
-        navigator.connection ||
-        navigator.mozConnection ||
-        navigator.webkitConnection;
+      const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 
-      if (!connection) {
-        return "Not exposed by this browser";
-      }
+      if (!c) return "Not exposed by this browser";
 
       const parts = [];
 
-      if (connection.effectiveType) {
-        parts.push("Effective type: " + connection.effectiveType);
-      }
+      if (c.effectiveType) parts.push("type=" + c.effectiveType);
+      if (c.downlink) parts.push("downlink≈" + c.downlink + "Mbps");
+      if (c.rtt) parts.push("rtt≈" + c.rtt + "ms");
+      if (typeof c.saveData === "boolean") parts.push("saveData=" + (c.saveData ? "on" : "off"));
 
-      if (connection.downlink) {
-        parts.push("Estimated downlink: " + connection.downlink + " Mbps");
-      }
-
-      if (connection.rtt) {
-        parts.push("Estimated RTT: " + connection.rtt + " ms");
-      }
-
-      if (typeof connection.saveData === "boolean") {
-        parts.push("Data saver: " + (connection.saveData ? "ON" : "OFF"));
-      }
-
-      return parts.length ? parts.join(", ") : "Available, but no details exposed";
+      return parts.length ? parts.join(", ") : "Connection API available, details hidden";
     }
 
-    function getDoNotTrackStatus() {
-      const value =
-        navigator.doNotTrack ||
-        window.doNotTrack ||
-        navigator.msDoNotTrack;
+    function getDoNotTrack() {
+      const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
 
-      if (value === "1" || value === "yes") return "Enabled";
-      if (value === "0" || value === "no") return "Disabled";
-      return "Not set / Not exposed";
+      if (dnt === "1" || dnt === "yes") return "Enabled";
+      if (dnt === "0" || dnt === "no") return "Disabled";
+
+      return "Not set / hidden";
     }
 
-    function getProtocolStatus() {
-      if (location.protocol === "https:") {
-        return "HTTPS";
-      }
-
-      if (location.protocol === "http:") {
-        return "HTTP";
-      }
-
-      if (location.protocol === "file:") {
-        return "Local file preview";
-      }
-
-      return safeValue(location.protocol, "Unknown protocol");
-    }
-
-    function isSecureContextText() {
-      return window.isSecureContext ? "YES" : "NO";
-    }
-
-    function getReferrerText() {
-      return document.referrer || "No referrer visible";
-    }
-
-    function getCurrentDomain() {
-      return location.hostname || "Local file / no hostname";
-    }
-
-    function setDemoCookie() {
-      /*
-       * This creates one harmless cookie for the current website/domain.
-       * JavaScript can only read non-HttpOnly cookies that belong to this
-       * website/domain and path.
-       *
-       * SameSite=Lax helps reduce cross-site sending of this demo cookie.
-       * Secure is only added on HTTPS because browsers reject Secure cookies
-       * on non-HTTPS pages.
-       */
-
-      const randomPart =
-        Math.random().toString(36).slice(2, 8) +
-        "-" +
-        Date.now().toString(36);
-
-      const securePart = location.protocol === "https:" ? "; Secure" : "";
-
-      document.cookie =
-        DEMO_COOKIE_NAME +
-        "=" +
-        encodeURIComponent("demo-only-" + randomPart) +
-        "; Max-Age=3600; SameSite=Lax; Path=/" +
-        securePart;
-    }
-
-    function getReadableCookiesForThisSite() {
-      /*
-       * document.cookie returns only cookies readable by JavaScript for this
-       * exact website/domain/path. It does NOT include:
-       * - Cookies from other websites
-       * - HttpOnly cookies
-       * - Cookies blocked by browser settings
-       */
-
-      return document.cookie || "";
-    }
-
-    function maskCookieString(cookieString) {
-      if (!cookieString) {
-        return "No JavaScript-readable cookies for this domain/path";
-      }
+    function maskCookies(cookieString) {
+      if (!cookieString) return "No readable cookies for this domain";
 
       return cookieString
         .split(";")
         .map(cookie => {
-          const [rawName] = cookie.trim().split("=");
-          const name = rawName || "unknown_cookie";
+          const name = cookie.trim().split("=")[0];
           return name + "=********";
         })
         .join("; ");
     }
 
-    function setDemoStorage() {
-      /*
-       * Local storage and session storage are also scoped to this origin.
-       * This demonstrates that websites can store small pieces of state in
-       * the browser, but not across every unrelated website.
-       */
-
-      try {
-        localStorage.setItem(
-          DEMO_STORAGE_KEY,
-          "demo-only-local-storage-value"
-        );
-      } catch (error) {
-        // Storage can be blocked by privacy settings.
-      }
-
-      try {
-        sessionStorage.setItem(
-          DEMO_SESSION_KEY,
-          "demo-only-session-storage-value"
-        );
-      } catch (error) {
-        // Storage can be blocked by privacy settings.
-      }
-    }
-
-    function getStorageStatus() {
-      let localStorageStatus = "Not available or blocked";
-      let sessionStorageStatus = "Not available or blocked";
-
-      try {
-        localStorageStatus =
-          localStorage.getItem(DEMO_STORAGE_KEY)
-            ? "Demo value readable for this origin"
-            : "No demo value found";
-      } catch (error) {
-        localStorageStatus = "Blocked by browser/privacy settings";
-      }
-
-      try {
-        sessionStorageStatus =
-          sessionStorage.getItem(DEMO_SESSION_KEY)
-            ? "Demo value readable for this tab/session"
-            : "No demo value found";
-      } catch (error) {
-        sessionStorageStatus = "Blocked by browser/privacy settings";
-      }
-
+    function getInfo() {
       return {
-        localStorageStatus,
-        sessionStorageStatus
-      };
-    }
-
-    function getBrowserSignals() {
-      const storageStatus = getStorageStatus();
-
-      return {
-        "Scan time": nowText(),
         "Current URL": location.href,
-        "Current domain": getCurrentDomain(),
-        "Protocol": getProtocolStatus(),
-        "Secure context": isSecureContextText(),
-        "Referrer": getReferrerText(),
+        "Current domain": location.hostname || "Local file / preview",
+        "Protocol": location.protocol || "Unknown",
+        "Secure context": window.isSecureContext ? "YES" : "NO",
+        "Referrer": document.referrer || "No referrer visible",
 
         "Browser": getBrowserName(),
-        "Operating system hint": getOperatingSystemHint(),
         "Device type": getDeviceType(),
-        "User agent": safeValue(navigator.userAgent),
-        "Platform": safeValue(navigator.platform),
-        "Language": safeValue(navigator.language),
-        "Preferred languages": Array.isArray(navigator.languages)
-          ? navigator.languages.join(", ")
-          : "Not available",
-
-        "Timezone": safeValue(
-          Intl.DateTimeFormat().resolvedOptions().timeZone
-        ),
-        "Timezone offset": new Date().getTimezoneOffset() + " minutes from UTC",
-        "Screen size": screen.width + " x " + screen.height,
-        "Available screen": screen.availWidth + " x " + screen.availHeight,
+        "OS hint": getOSHint(),
+        "Language": navigator.language || "Unknown",
+        "Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown",
+        "Screen": screen.width + " x " + screen.height,
         "Viewport": window.innerWidth + " x " + window.innerHeight,
-        "Color depth": safeValue(screen.colorDepth) + " bits",
-        "Pixel ratio": safeValue(window.devicePixelRatio),
+        "Pixel ratio": window.devicePixelRatio || "Unknown",
 
-        "Online status": booleanText(navigator.onLine),
-        "Cookies enabled": booleanText(navigator.cookieEnabled),
-        "Do Not Track": getDoNotTrackStatus(),
-        "Connection info": getConnectionInfo(),
+        "Online": navigator.onLine ? "YES" : "NO",
+        "Cookies enabled": navigator.cookieEnabled ? "YES" : "NO",
+        "Readable cookies here": maskCookies(document.cookie),
+        "Do Not Track": getDoNotTrack(),
+        "Connection": getConnectionInfo(),
 
-        "CPU core hint": safeValue(navigator.hardwareConcurrency),
-        "Device memory hint": navigator.deviceMemory
-          ? navigator.deviceMemory + " GB approx"
-          : "Not exposed by this browser",
-
-        "Readable cookies on this domain": maskCookieString(
-          getReadableCookiesForThisSite()
-        ),
-        "Local storage": storageStatus.localStorageStatus,
-        "Session storage": storageStatus.sessionStorageStatus,
-
-        "Can read cookies from other websites?": "NO",
-        "Can read HttpOnly cookies?": "NO",
-        "Can access saved passwords?": "NO",
-        "Can access files automatically?": "NO",
-        "Can access camera/mic without permission?": "NO",
-        "Can know public IP from this file alone?": "NO, not without asking an external service"
+        "Can read other websites cookies": "NO",
+        "Can read HttpOnly cookies": "NO",
+        "Can access saved passwords": "NO",
+        "Can access camera/mic without permission": "NO"
       };
     }
 
-    function buildDataTable() {
-      const signals = getBrowserSignals();
-      dataTableBody.innerHTML = "";
+    function buildDetails() {
+      const info = getInfo();
+      detailsBody.innerHTML = "";
 
-      Object.entries(signals).forEach(([key, value]) => {
-        const row = document.createElement("tr");
+      Object.entries(info).forEach(([key, value]) => {
+        const tr = document.createElement("tr");
 
-        const keyCell = document.createElement("th");
-        keyCell.textContent = key;
+        const th = document.createElement("th");
+        th.textContent = key;
 
-        const valueCell = document.createElement("td");
-        valueCell.textContent = value;
+        const td = document.createElement("td");
+        td.textContent = value;
 
-        row.appendChild(keyCell);
-        row.appendChild(valueCell);
-
-        dataTableBody.appendChild(row);
+        tr.appendChild(th);
+        tr.appendChild(td);
+        detailsBody.appendChild(tr);
       });
     }
 
-    function computeEducationalRiskScore() {
-      /*
-       * This is not a real security score.
-       * It is an awareness score to create discussion.
-       */
-
-      let score = 35;
-
-      if (navigator.cookieEnabled) score += 10;
-
-      if (location.protocol === "http:") score += 15;
-      if (location.protocol === "file:") score += 5;
-
-      if (getDoNotTrackStatus() !== "Enabled") score += 5;
-
-      if (!window.isSecureContext) score += 10;
-
-      if (!document.referrer) score += 5;
-
-      return Math.min(score, 88);
-    }
-
-    function getScanLines() {
-      const signals = getBrowserSignals();
+    function getLines() {
+      const info = getInfo();
 
       return [
-        {
-          text: "> QR code opened a web page.",
-          className: "cyan"
-        },
-        {
-          text: "> Reminder: a QR code is just a hidden URL.",
-          className: "warn"
-        },
-        {
-          text: "> Starting safe local browser scan...",
-          className: "info"
-        },
-        {
-          text: "> No data is being uploaded or sent to a server.",
-          className: "ok"
-        },
-        {
-          text: "> Creating one harmless demo cookie for this domain only...",
-          className: "purple"
-        },
-        {
-          text: "> Demo cookie created: " + DEMO_COOKIE_NAME + "=********",
-          className: "ok"
-        },
-        {
-          text: "> Reading browser-visible information...",
-          className: "info"
-        },
-        {
-          text: "> Current domain: " + signals["Current domain"],
-          className: "ok"
-        },
-        {
-          text: "> Protocol: " + signals["Protocol"],
-          className:
-            signals["Protocol"] === "HTTPS"
-              ? "ok"
-              : "warn"
-        },
-        {
-          text: "> Secure context: " + signals["Secure context"],
-          className:
-            signals["Secure context"] === "YES"
-              ? "ok"
-              : "warn"
-        },
-        {
-          text: "> Browser: " + signals["Browser"],
-          className: "ok"
-        },
-        {
-          text: "> Device type: " + signals["Device type"],
-          className: "ok"
-        },
-        {
-          text: "> OS hint: " + signals["Operating system hint"],
-          className: "ok"
-        },
-        {
-          text: "> Language: " + signals["Language"],
-          className: "ok"
-        },
-        {
-          text: "> Timezone: " + signals["Timezone"],
-          className: "ok"
-        },
-        {
-          text: "> Screen size: " + signals["Screen size"],
-          className: "ok"
-        },
-        {
-          text: "> Viewport: " + signals["Viewport"],
-          className: "ok"
-        },
-        {
-          text: "> Cookies enabled: " + signals["Cookies enabled"],
-          className:
-            signals["Cookies enabled"] === "YES"
-              ? "warn"
-              : "ok"
-        },
-        {
-          text: "> Do Not Track: " + signals["Do Not Track"],
-          className:
-            signals["Do Not Track"] === "Enabled"
-              ? "ok"
-              : "warn"
-        },
-        {
-          text: "> Connection info: " + signals["Connection info"],
-          className: "ok"
-        },
-        {
-          text: "> Checking JavaScript-readable cookies for THIS domain/path only...",
-          className: "warn"
-        },
-        {
-          text: "> Readable cookie names: " + signals["Readable cookies on this domain"],
-          className: "danger"
-        },
-        {
-          text: "> Checking browser storage scoped to this origin...",
-          className: "warn"
-        },
-        {
-          text: "> Local storage: " + signals["Local storage"],
-          className: "danger"
-        },
-        {
-          text: "> Session storage: " + signals["Session storage"],
-          className: "danger"
-        },
-        {
-          text: "> Accuracy check: can this page read Gmail/Teams/bank cookies? NO.",
-          className: "ok"
-        },
-        {
-          text: "> Accuracy check: can this page read HttpOnly session cookies? NO.",
-          className: "ok"
-        },
-        {
-          text: "> Real risk: a malicious QR could open a fake login page.",
-          className: "danger"
-        },
-        {
-          text: "> Real risk: a fake SSO page could capture username, password, or MFA code.",
-          className: "danger"
-        },
-        {
-          text: "> Real risk: a malicious page could set tracking cookies for its own domain.",
-          className: "danger"
-        },
-        {
-          text: "> IAM lesson: verify identity, device, location, session, and privilege.",
-          className: "cyan"
-        },
-        {
-          text: "> Opening awareness explanation...",
-          className: "info"
-        }
+        { text: "> QR code opened...", className: "cyan" },
+        { text: "> Starting Infomania scan...", className: "info" },
+        { text: "> Loading browser-visible signals...", className: "info" },
+        { text: "> No server upload detected.", className: "ok" },
+
+        { text: "> Checking destination URL...", className: "warn" },
+        { text: "> URL: " + info["Current URL"], className: "muted" },
+        { text: "> Domain: " + info["Current domain"], className: "ok" },
+        { text: "> Protocol: " + info["Protocol"], className: "ok" },
+        { text: "> Secure context: " + info["Secure context"], className: info["Secure context"] === "YES" ? "ok" : "warn" },
+
+        { text: "> Reading browser profile...", className: "warn" },
+        { text: "> Browser: " + info["Browser"], className: "ok" },
+        { text: "> Device: " + info["Device type"], className: "ok" },
+        { text: "> OS hint: " + info["OS hint"], className: "ok" },
+        { text: "> Language: " + info["Language"], className: "ok" },
+        { text: "> Timezone: " + info["Timezone"], className: "ok" },
+        { text: "> Screen: " + info["Screen"], className: "ok" },
+        { text: "> Viewport: " + info["Viewport"], className: "ok" },
+        { text: "> Online: " + info["Online"], className: "ok" },
+
+        { text: "> Checking cookie status...", className: "warn" },
+        { text: "> Cookies enabled: " + info["Cookies enabled"], className: info["Cookies enabled"] === "YES" ? "danger" : "ok" },
+        { text: "> Readable cookies for this site: " + info["Readable cookies here"], className: "danger" },
+
+        { text: "> Simulating session exposure...", className: "danger" },
+        { text: "> session_id=********", className: "danger" },
+        { text: "> auth_token=********", className: "danger" },
+        { text: "> sso_context=********", className: "danger" },
+
+        { text: "> Accuracy check: can read other websites cookies? NO.", className: "ok" },
+        { text: "> Accuracy check: can read HttpOnly cookies? NO.", className: "ok" },
+        { text: "> Accuracy check: can access saved passwords? NO.", className: "ok" },
+
+        { text: "> Real risk: unknown QR codes can open fake login pages.", className: "danger" },
+        { text: "> Real risk: fake SSO pages can steal credentials.", className: "danger" },
+        { text: "> Real risk: attackers may trick users into approving MFA.", className: "danger" },
+
+        { text: "> IAM lesson: verify identity, device, session, and access.", className: "cyan" },
+        { text: "> Opening awareness message...", className: "info" }
       ];
     }
 
     function addLine(line, delay) {
-      const timerId = setTimeout(() => {
+      const id = setTimeout(() => {
         const div = document.createElement("div");
         div.className = "line " + line.className;
         div.textContent = line.text;
-
         terminal.appendChild(div);
         terminal.scrollTop = terminal.scrollHeight;
       }, delay);
 
-      activeTimers.push(timerId);
+      timers.push(id);
     }
 
-    function animateScore(target) {
-      let value = 0;
-      scoreEl.textContent = "0%";
-
-      const interval = setInterval(() => {
-        value += 2;
-
-        if (value >= target) {
-          value = target;
-          clearInterval(interval);
-        }
-
-        scoreEl.textContent = value + "%";
-      }, 35);
-
-      activeTimers.push(interval);
-    }
-
-    function runDemo() {
+    function runScan() {
       clearTimers();
-
       terminal.innerHTML = "";
       reveal.classList.remove("show");
-      mainCard.classList.remove("shake");
+      details.classList.remove("show");
 
       setDemoCookie();
-      setDemoStorage();
-      buildDataTable();
+      buildDetails();
 
-      const targetScore = computeEducationalRiskScore();
-      animateScore(targetScore);
-
-      const lines = getScanLines();
+      const lines = getLines();
 
       lines.forEach((line, index) => {
-        addLine(line, index * 430);
+        addLine(line, index * 420);
       });
 
-      const revealTimer = setTimeout(() => {
+      const id = setTimeout(() => {
         reveal.classList.add("show");
-        reveal.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest"
-        });
-      }, lines.length * 430 + 500);
+        reveal.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, lines.length * 420 + 500);
 
-      activeTimers.push(revealTimer);
+      timers.push(id);
     }
 
-    function toggleExactData() {
-      buildDataTable();
-      exactData.classList.toggle("hidden");
-
-      if (!exactData.classList.contains("hidden")) {
-        exactData.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
+    function restartScan() {
+      runScan();
     }
 
-    function toggleChecklist() {
-      checklist.classList.toggle("hidden");
-
-      if (!checklist.classList.contains("hidden")) {
-        checklist.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
+    function toggleDetails() {
+      buildDetails();
+      details.classList.toggle("show");
     }
 
-    function toggleMyths() {
-      myths.classList.toggle("hidden");
-
-      if (!myths.classList.contains("hidden")) {
-        myths.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
-    }
-
-    function resetDemoData() {
-      /*
-       * Remove the demo cookie and demo storage values.
-       */
-
-      document.cookie =
-        DEMO_COOKIE_NAME +
-        "=; Max-Age=0; SameSite=Lax; Path=/";
-
-      try {
-        localStorage.removeItem(DEMO_STORAGE_KEY);
-      } catch (error) {
-        // Ignore if blocked.
-      }
-
-      try {
-        sessionStorage.removeItem(DEMO_SESSION_KEY);
-      } catch (error) {
-        // Ignore if blocked.
-      }
-
-      buildDataTable();
-
-      terminal.innerHTML = "";
-
-      const resetLines = [
-        {
-          text: "> Demo cookie removed.",
-          className: "ok"
-        },
-        {
-          text: "> Demo local storage removed.",
-          className: "ok"
-        },
-        {
-          text: "> Demo session storage removed.",
-          className: "ok"
-        },
-        {
-          text: "> No personal or corporate data was collected.",
-          className: "cyan"
-        }
-      ];
-
-      resetLines.forEach((line, index) => {
-        addLine(line, index * 280);
-      });
-
-      mainCard.classList.add("shake");
-
-      setTimeout(() => {
-        mainCard.classList.remove("shake");
-      }, 400);
-    }
-
-    function buildReportText() {
-      const signals = getBrowserSignals();
-
-      return [
-        "QR Security Awareness Demo",
-        "",
-        "What happened:",
-        "- You scanned a QR code and opened a web page.",
-        "- The page showed browser-visible information locally.",
-        "- The page created one harmless demo cookie for its own domain.",
-        "",
-        "Accurate security lesson:",
-        "- A normal website cannot read cookies from other websites.",
-        "- A normal website cannot read HttpOnly cookies.",
-        "- A QR code can still be dangerous because it may open a phishing page.",
-        "- Fake SSO pages can steal credentials or MFA codes.",
-        "- Malicious pages can set/read their own tracking cookies.",
-        "",
-        "IAM reminder:",
-        "- Verify identity.",
-        "- Use MFA.",
-        "- Apply least privilege.",
-        "- Use conditional access.",
-        "- Review access regularly.",
-        "- Report suspicious QR codes and links.",
-        "",
-        "Local demo context:",
-        "- Domain: " + signals["Current domain"],
-        "- Protocol: " + signals["Protocol"],
-        "- Browser: " + signals["Browser"],
-        "- Device type: " + signals["Device type"],
-        "- Cookies enabled: " + signals["Cookies enabled"],
-        "",
-        "Privacy note:",
-        "This demo does not send data anywhere."
-      ].join("\n");
-    }
-
-    function toggleReport() {
-      reportText.textContent = buildReportText();
-      reportSection.classList.toggle("hidden");
-
-      if (!reportSection.classList.contains("hidden")) {
-        reportSection.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
-    }
-
-    async function copyReport() {
-      const text = buildReportText();
-      reportText.textContent = text;
-
-      try {
-        await navigator.clipboard.writeText(text);
-        alert("Awareness message copied.");
-      } catch (error) {
-        alert("Copy failed. You can manually select and copy the text.");
-      }
-    }
-
-    /*
-     * Initialize page.
-     * The demo starts automatically after a small delay for QR-campaign effect.
-     */
-
-    setDemoCookie();
-    setDemoStorage();
-    buildDataTable();
-    reportText.textContent = buildReportText();
-
-    const initialTimer = setTimeout(() => {
-      runDemo();
-    }, 700);
-
-    activeTimers.push(initialTimer);
+    window.addEventListener("load", () => {
+      removeDemoCookie();
+      setTimeout(runScan, 500);
+    });
   </script>
 </body>
 </html>
