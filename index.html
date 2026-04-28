@@ -1,235 +1,600 @@
+Here’s a more polished, dramatic, single-file version:
+
+```html
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cookie Security Awareness</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Cookie Awareness Demo</title>
+
   <style>
+    :root {
+      --bg: #050816;
+      --card: rgba(15, 23, 42, 0.92);
+      --border: rgba(148, 163, 184, 0.25);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --yellow: #facc15;
+      --red: #fb7185;
+      --green: #86efac;
+      --blue: #93c5fd;
+      --cyan: #67e8f9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: system-ui, Arial, sans-serif;
-      background: radial-gradient(circle at top, #1f2937, #020617);
-      color: #e5e7eb;
       min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(250, 204, 21, 0.18), transparent 28%),
+        radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.20), transparent 32%),
+        radial-gradient(circle at 50% 100%, rgba(244, 63, 94, 0.18), transparent 28%),
+        var(--bg);
+      color: var(--text);
       display: grid;
       place-items: center;
       padding: 20px;
     }
 
-    .card {
+    .shell {
       width: 100%;
-      max-width: 720px;
-      background: rgba(15, 23, 42, 0.92);
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 25px 80px rgba(0,0,0,0.45);
+      max-width: 900px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(250, 204, 21, 0.12);
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      color: var(--yellow);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: 0 30px 120px rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.05),
+        transparent
+      );
+      transform: translateX(-100%);
+      animation: shine 4s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      55% { transform: translateX(100%); }
+      100% { transform: translateX(100%); }
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: 34px;
-      color: #facc15;
+      margin: 0;
+      font-size: clamp(32px, 6vw, 56px);
+      line-height: 1;
+      letter-spacing: -1.5px;
     }
 
-    .subtitle {
-      color: #cbd5e1;
-      margin-bottom: 26px;
+    .highlight {
+      color: var(--yellow);
     }
+
+    .intro {
+      margin: 16px 0 26px;
+      color: #cbd5e1;
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 760px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 22px;
+    }
+
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: rgba(2, 6, 23, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #64748b;
+    }
+
+    .dot.red { background: #f87171; }
+    .dot.yellow { background: #facc15; }
+    .dot.green { background: #4ade80; }
 
     .terminal {
-      background: #020617;
-      border-radius: 16px;
-      padding: 18px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      min-height: 345px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 14px;
-      min-height: 190px;
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      line-height: 1.55;
     }
 
     .line {
-      margin: 8px 0;
       opacity: 0;
-      transform: translateY(6px);
-      animation: show 0.45s forwards;
+      transform: translateY(5px);
+      animation: appear 0.35s forwards;
+      margin: 5px 0;
+      word-break: break-word;
     }
 
-    @keyframes show {
+    @keyframes appear {
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
 
-    .danger {
-      color: #fb7185;
+    .info { color: var(--blue); }
+    .ok { color: var(--green); }
+    .warn { color: var(--yellow); }
+    .danger { color: var(--red); }
+    .cyan { color: var(--cyan); }
+
+    .risk-score {
+      text-align: center;
     }
 
-    .ok {
-      color: #86efac;
+    .circle {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      margin: 14px auto 20px;
+      display: grid;
+      place-items: center;
+      background:
+        conic-gradient(var(--red) 0deg, var(--yellow) 230deg, rgba(51,65,85,0.6) 230deg);
+      position: relative;
     }
 
-    .warn {
-      color: #facc15;
+    .circle::after {
+      content: "";
+      position: absolute;
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      background: #020617;
     }
 
-    .info {
-      color: #93c5fd;
+    .score {
+      position: relative;
+      z-index: 1;
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+
+    .score-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mini-item {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(30, 41, 59, 0.65);
+      border-left: 4px solid var(--cyan);
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    .reveal {
+      margin-top: 24px;
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.14), rgba(239, 68, 68, 0.10));
+      border: 1px solid rgba(250, 204, 21, 0.38);
+      display: none;
+    }
+
+    .reveal.show {
+      display: block;
+      animation: pop 0.45s ease-out;
+    }
+
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .reveal h2 {
+      margin: 0 0 10px;
+      color: var(--yellow);
+      font-size: 30px;
+    }
+
+    .reveal p {
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .lesson-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 700px) {
+      .lesson-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lesson {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(15, 23, 42, 0.74);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .lesson strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .lesson span {
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .primary {
+      background: var(--yellow);
+      color: #111827;
+    }
+
+    .secondary {
+      background: rgba(148, 163, 184, 0.16);
+      color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.24);
     }
 
     .hidden {
       display: none;
     }
 
-    .reveal {
-      margin-top: 24px;
-      padding: 22px;
-      border-radius: 18px;
-      background: rgba(250, 204, 21, 0.1);
-      border: 1px solid rgba(250, 204, 21, 0.35);
-    }
-
-    .reveal h2 {
-      margin-top: 0;
-      color: #facc15;
-      font-size: 26px;
-    }
-
-    .lesson {
-      margin-top: 18px;
-      display: grid;
-      gap: 12px;
-    }
-
-    .lesson div {
-      background: rgba(30, 41, 59, 0.75);
-      padding: 14px 16px;
-      border-radius: 14px;
-      border-left: 4px solid #38bdf8;
-    }
-
-    button {
-      margin-top: 22px;
-      width: 100%;
-      border: 0;
-      border-radius: 14px;
-      padding: 15px 18px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      background: #facc15;
-      color: #111827;
-    }
-
-    button:hover {
-      filter: brightness(1.05);
-    }
-
     .footer {
       margin-top: 18px;
-      color: #94a3b8;
+      color: var(--muted);
       font-size: 13px;
       text-align: center;
     }
+
+    .disclaimer {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(34, 197, 94, 0.10);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: #bbf7d0;
+      font-size: 14px;
+    }
   </style>
 </head>
+
 <body>
+  <main class="shell">
+    <div class="badge">🍪 Security Awareness Simulation</div>
 
-  <main class="card">
-    <h1>🍪 Cookie Scan Started</h1>
-    <p class="subtitle">
-      This page is checking what your browser may expose when you scan a random QR code.
-    </p>
+    <section class="card">
+      <h1>
+        This QR code could have been a <span class="highlight">trap.</span>
+      </h1>
 
-    <div class="terminal" id="terminal"></div>
-
-    <section class="reveal hidden" id="reveal">
-      <h2>Relax. This was a safe simulation.</h2>
-      <p>
-        This page did <strong>not</strong> steal your cookies, passwords, or company data.
-        But scanning unknown QR codes can take you to malicious websites that try to trick you,
-        steal sessions, or capture credentials.
+      <p class="intro">
+        You scanned a QR code and opened a website. That simple action can expose browser signals,
+        invite phishing, or lead to fake login pages. This demo safely shows the kind of information
+        a website can appear to know.
       </p>
 
-      <div class="lesson">
-        <div>🍪 Cookies can represent your logged-in identity.</div>
-        <div>🔐 If session cookies are stolen, attackers may act as you.</div>
-        <div>📱 A QR code is just a hidden web link. Treat it like a suspicious link.</div>
-        <div>🛡️ IAM, MFA, session controls, and awareness protect company access.</div>
+      <div class="grid">
+        <div class="panel">
+          <div class="terminal-header">
+            <div class="dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <span>browser-session-scan.demo</span>
+          </div>
+
+          <div class="terminal" id="terminal"></div>
+        </div>
+
+        <div class="panel risk-score">
+          <div class="score-label">Simulated QR Risk Score</div>
+          <div class="circle">
+            <div class="score" id="score">0%</div>
+          </div>
+
+          <div class="mini-list">
+            <div class="mini-item">Unknown QR codes are hidden links.</div>
+            <div class="mini-item">Fake login pages can steal credentials.</div>
+            <div class="mini-item">Cookies can represent active sessions.</div>
+            <div class="mini-item">IAM protects access, but behavior matters.</div>
+          </div>
+        </div>
       </div>
 
-      <button onclick="restartDemo()">Run demo again</button>
-    </section>
+      <section class="reveal" id="reveal">
+        <h2>Relax — this was not a real attack.</h2>
 
-    <div class="footer">
-      Security Awareness Demo • No personal data is collected or sent anywhere
-    </div>
+        <p>
+          This page did <strong>not</strong> steal your cookies, passwords, token, email, or company data.
+          The cookie values shown below are fake and masked. The browser details are basic signals that many
+          websites can read without needing special permission.
+        </p>
+
+        <div class="lesson-grid">
+          <div class="lesson">
+            <strong>🍪 Cookies are identity clues</strong>
+            <span>
+              Some cookies keep you logged in. If a real attacker steals a session cookie,
+              they may try to impersonate you.
+            </span>
+          </div>
+
+          <div class="lesson">
+            <strong>📱 QR codes hide the destination</strong>
+            <span>
+              A QR code can take you to a malicious website before you realize what link you opened.
+            </span>
+          </div>
+
+          <div class="lesson">
+            <strong>🔐 IAM reduces blast radius</strong>
+            <span>
+              MFA, access reviews, conditional access, least privilege, and session controls help protect accounts.
+            </span>
+          </div>
+
+          <div class="lesson">
+            <strong>🧠 Awareness is the first control</strong>
+            <span>
+              Pause before scanning unknown QR codes. Verify the source, destination, and reason.
+            </span>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          ✅ Safe demo: no personal data is stored, transmitted, or sent to any server.
+        </div>
+
+        <div class="actions">
+          <button class="primary" onclick="restartDemo()">Run simulation again</button>
+          <button class="secondary" onclick="showChecklist()">Show safety checklist</button>
+        </div>
+
+        <div id="checklist" class="hidden">
+          <div class="lesson-grid" style="margin-top:18px;">
+            <div class="lesson">
+              <strong>Before scanning</strong>
+              <span>Check who placed the QR code and whether it looks tampered with.</span>
+            </div>
+            <div class="lesson">
+              <strong>Before logging in</strong>
+              <span>Check the URL carefully. Do not enter credentials on unfamiliar pages.</span>
+            </div>
+            <div class="lesson">
+              <strong>When suspicious</strong>
+              <span>Close the page and report the QR code or link to your security team.</span>
+            </div>
+            <div class="lesson">
+              <strong>Best practice</strong>
+              <span>Use MFA, avoid reusing passwords, and keep your browser updated.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        Security Awareness Demo • Built for IAM, cookie, QR phishing, and session security education
+      </div>
+    </section>
   </main>
 
   <script>
     const terminal = document.getElementById("terminal");
     const reveal = document.getElementById("reveal");
+    const scoreEl = document.getElementById("score");
+    const checklist = document.getElementById("checklist");
 
-    const deviceInfo = {
-      browser: navigator.userAgent.includes("Chrome") ? "Chrome-like browser" :
-               navigator.userAgent.includes("Firefox") ? "Firefox" :
-               navigator.userAgent.includes("Safari") ? "Safari-like browser" :
-               "Unknown browser",
-      platform: navigator.platform || "Unknown platform",
-      language: navigator.language || "Unknown language",
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown timezone",
-      screen: `${screen.width}x${screen.height}`,
-      online: navigator.onLine ? "YES" : "NO"
+    function getBrowserName() {
+      const ua = navigator.userAgent;
+
+      if (ua.includes("Edg")) return "Microsoft Edge";
+      if (ua.includes("Chrome")) return "Chrome-like browser";
+      if (ua.includes("Firefox")) return "Firefox";
+      if (ua.includes("Safari")) return "Safari";
+      return "Unknown browser";
+    }
+
+    function getDeviceType() {
+      const ua = navigator.userAgent.toLowerCase();
+
+      if (/mobile|android|iphone|ipod/.test(ua)) return "Mobile";
+      if (/ipad|tablet/.test(ua)) return "Tablet";
+      return "Desktop/Laptop";
+    }
+
+    function mask(value) {
+      if (!value) return "********";
+      return value.slice(0, 2) + "********" + value.slice(-2);
+    }
+
+    const browserSignals = {
+      browser: getBrowserName(),
+      device: getDeviceType(),
+      platform: navigator.platform || "Unknown",
+      language: navigator.language || "Unknown",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown",
+      screen: `${screen.width} x ${screen.height}`,
+      online: navigator.onLine ? "YES" : "NO",
+      cookiesEnabled: navigator.cookieEnabled ? "YES" : "NO"
     };
 
-    const fakeCookies = [
-      "session_id = ***************",
-      "auth_token = ***************",
-      "last_login = Today",
-      "remember_device = true",
-      "corporate_access = possible"
+    const fakeCookieData = [
+      `session_id=${mask("S3SSION-9283-FAKE")}`,
+      `auth_token=${mask("TOKEN-DEMO-4451")}`,
+      `last_login=Today`,
+      `remember_device=true`,
+      `sso_context=company-login-demo`,
+      `role_hint=employee-user`
     ];
 
-    const lines = [
-      { text: "> QR destination opened...", className: "info" },
-      { text: "> Reading browser-visible signals...", className: "warn" },
-      { text: `> Browser: ${deviceInfo.browser}`, className: "ok" },
-      { text: `> Platform: ${deviceInfo.platform}`, className: "ok" },
-      { text: `> Language: ${deviceInfo.language}`, className: "ok" },
-      { text: `> Timezone: ${deviceInfo.timezone}`, className: "ok" },
-      { text: `> Screen: ${deviceInfo.screen}`, className: "ok" },
-      { text: `> Online: ${deviceInfo.online}`, className: "ok" },
-      { text: "> Simulating cookie exposure...", className: "danger" },
-      ...fakeCookies.map(c => ({ text: `> ${c}`, className: "danger" })),
-      { text: "> Risk: Unknown QR codes can lead to phishing or session theft.", className: "danger" },
-      { text: "> Opening awareness message...", className: "warn" }
+    const scanLines = [
+      { text: "> QR code opened successfully.", className: "cyan" },
+      { text: "> Checking browser-visible signals...", className: "info" },
+      { text: `> Browser detected: ${browserSignals.browser}`, className: "ok" },
+      { text: `> Device type: ${browserSignals.device}`, className: "ok" },
+      { text: `> Platform: ${browserSignals.platform}`, className: "ok" },
+      { text: `> Language: ${browserSignals.language}`, className: "ok" },
+      { text: `> Timezone: ${browserSignals.timezone}`, className: "ok" },
+      { text: `> Screen size: ${browserSignals.screen}`, className: "ok" },
+      { text: `> Cookies enabled: ${browserSignals.cookiesEnabled}`, className: "warn" },
+      { text: "> Simulating cookie/session exposure...", className: "danger" },
+      ...fakeCookieData.map(item => ({
+        text: `> cookie.${item}`,
+        className: "danger"
+      })),
+      { text: "> Simulated finding: active browser session may exist.", className: "warn" },
+      { text: "> Simulated risk: unknown QR codes may lead to phishing.", className: "danger" },
+      { text: "> Simulated risk: stolen session cookies can bypass login prompts.", className: "danger" },
+      { text: "> Finalizing safe awareness message...", className: "info" }
     ];
 
-    function typeLines() {
+    function addLine(line, delay) {
+      setTimeout(() => {
+        const div = document.createElement("div");
+        div.className = `line ${line.className}`;
+        div.textContent = line.text;
+        terminal.appendChild(div);
+        terminal.scrollTop = terminal.scrollHeight;
+      }, delay);
+    }
+
+    function animateScore() {
+      let value = 0;
+      const target = 87;
+
+      const timer = setInterval(() => {
+        value += 3;
+        if (value >= target) {
+          value = target;
+          clearInterval(timer);
+        }
+        scoreEl.textContent = value + "%";
+      }, 55);
+    }
+
+    function runDemo() {
       terminal.innerHTML = "";
-      reveal.classList.add("hidden");
+      reveal.classList.remove("show");
+      checklist.classList.add("hidden");
+      scoreEl.textContent = "0%";
 
-      lines.forEach((line, index) => {
-        setTimeout(() => {
-          const div = document.createElement("div");
-          div.className = `line ${line.className}`;
-          div.style.animationDelay = "0s";
-          div.textContent = line.text;
-          terminal.appendChild(div);
-        }, index * 650);
+      animateScore();
+
+      scanLines.forEach((line, index) => {
+        addLine(line, index * 520);
       });
 
       setTimeout(() => {
-        reveal.classList.remove("hidden");
-      }, lines.length * 650 + 400);
+        reveal.classList.add("show");
+      }, scanLines.length * 520 + 500);
     }
 
     function restartDemo() {
-      typeLines();
+      runDemo();
     }
 
-    typeLines();
-  </script>
+    function showChecklist() {
+      checklist.classList.toggle("hidden");
+    }
 
+    runDemo();
+  </script>
 </body>
 </html>
+```
